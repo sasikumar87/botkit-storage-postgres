@@ -117,6 +117,10 @@ module.exports = function (config) {
       all: wrap(function *() {
         const result = yield dbexec(q => q(`SELECT json from ${tableName}`))
         return result.rows.map(x => parseFn(x.json));
+      }),
+      query: wrap(function *(key, val) {
+        const result = yield dbexec(q => q(`SELECT json from ${tableName} where json @> '{"${key}":"${val}"}'`));
+        return result.rows.map(x => parseFn(x.json));
       })
     };
   }
